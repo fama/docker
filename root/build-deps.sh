@@ -10,6 +10,7 @@ set -e
 # install dependencies
 apt-get update
 apt-get install -y \
+        git \
         imagemagick \
         libapache2-mod-xsendfile \
         libbz2-dev \
