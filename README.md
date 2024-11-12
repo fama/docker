@@ -3,7 +3,12 @@
 This image is based on the official [PHP Apache image](https://hub.docker.com/_/php) and provides a DokuWiki
 installation. It is meant to be used with a reverse proxy that handles SSL termination and authentication. It's probably
 not worth it to use this image for a standalone installation 
-(read [Running DokuWiki on Docker](https://www.patreon.com/posts/42961375) for alternatives).
+(read [Running DokuWiki on Docker](https://www.patreon.com/posts/42961375) for alternatives). Running Docker without a
+proper understanding of Linux, networking and Docker itself is not recommended. If you are a novice, you should probably
+use a shared hosting provider instead.
+
+If you use this image, **please leave a star at [Docker Hub](https://hub.docker.com/r/dokuwiki/dokuwiki)⭐**- it helps
+to improve the visibility in the registry.
 
 ## Quick Start:
 
@@ -39,6 +44,17 @@ The container runs the standard production php.ini. Some options can be set via 
 
 Custom PHP configuration values can be set in a `php.ini` file in the storage volume.
 
+## Permissions
+
+When the container is started without setting an explicit user id (as the compose file suggests), the image will start as
+`root` (uid:`0` gid:`0`) and Apache will drop privileges to `www-data` (uid: `33` gid:`33`). Before this happens, the
+entrypoint script will use the `root` privileges to recursively chown everything in `/storage` to `33:33`.
+
+When started with any other user id, the whole container will run under that id. You have to ensure that anything mounted
+to `/storage` is writable by that uid.
+
+The entry script will print some info about it's effective uid and gid during container start.
+
 ## Farming
 
 This image supports farming via the [farmer plugin](https://www.dokuwiki.org/plugin:farmer). To use it, install the
@@ -71,7 +87,7 @@ volume while all bundled data is kept in the container and is correctly updated/
 
 To manually build the image:
 
-    docker build -t dokuwiki/dokuwiki:stable .
+    docker build --build-arg="DOKUWIKI_VERSION=stable" -t dokuwiki/dokuwiki:stable .
 
 Builds and deployments are currently done daily using
 the [GitHub Actions workflow](https://github.com/dokuwiki/docker/actions/workflows/docker.yml).
