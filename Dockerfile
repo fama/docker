@@ -1,4 +1,7 @@
-FROM php:8.2-apache AS dokuwiki-base
+FROM php:8.3-apache AS dokuwiki-base
+
+# additional extensions can be passed as build-arg
+ARG PHP_EXTENSIONS=""
 
 COPY root/build-deps.sh /
 RUN /bin/bash /build-deps.sh
@@ -8,9 +11,9 @@ FROM dokuwiki-base
 
 ARG DOKUWIKI_VERSION=stable
 
-ENV PHP_UPLOADLIMIT 128M
-ENV PHP_MEMORYLIMIT 256M
-ENV PHP_TIMEZONE UTC
+ENV PHP_UPLOADLIMIT=128M
+ENV PHP_MEMORYLIMIT=256M
+ENV PHP_TIMEZONE=UTC
 
 COPY root /
 RUN /bin/bash /build-setup.sh
