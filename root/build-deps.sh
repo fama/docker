@@ -12,8 +12,12 @@ apt-get update
 apt-get install -y --no-install-recommends \
         git \
         imagemagick \
-        libapache2-mod-xsendfile
+        libapache2-mod-xsendfile \
+        openssh-client
 apt-get autoclean
+
+# Home directory needed to place the .ssh keys
+adduser --uid 1000 --disabled-password --gecos "" dokuwiki
 
 # install extensions
 curl -sSLf -o install-php-extensions \
